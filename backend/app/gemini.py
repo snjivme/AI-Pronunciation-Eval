@@ -14,7 +14,7 @@ client = genai.Client(
 )
 
 
-def evaluate_pronunciation(audio_path):
+def evaluate_pronunciation(audio_path, mime_type=None):
 
     prompt = """
 You are an expert English pronunciation evaluator and transcriber.
@@ -62,7 +62,11 @@ Rules:
 """
     try:
         # Upload audio to Gemini
-        uploaded_file = client.files.upload(file=audio_path)
+        upload_config = {}
+        if mime_type:
+            upload_config["mime_type"] = mime_type
+            
+        uploaded_file = client.files.upload(file=audio_path, config=upload_config)
 
         print("=" * 50)
         print("Audio uploaded successfully to Gemini")

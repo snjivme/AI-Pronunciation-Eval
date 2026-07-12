@@ -65,8 +65,52 @@ async def upload_audio(
             detail="Audio duration must be between 30 and 45 seconds."
         )
 
+    # Determine/Guess Mime Type
+    content_type = file.content_type
+    original_filename = file.filename or ""
+    
+    mime_type = None
+    if content_type and content_type.startswith("audio/"):
+        mime_type = content_type
+    else:
+        # Fallback to guessing from extension
+        import mimetypes
+        guessed_type, _ = mimetypes.guess_type(original_filename)
+        if guessed_type and guessed_type.startswith("audio/"):
+            mime_type = guessed_type
+        else:
+            # Manual mappings for Linux environment where some audio mimetypes are not registered
+            ext = os.path.splitext(original_filename)[1].lower()
+            extension_map = {
+                ".mp3": "audio/mp3",
+                ".wav": "audio/wav",
+                ".m4a": "audio/m4a",
+                ".aac": "audio/aac",
+                ".ogg": "audio/ogg",
+                ".flac": "audio/flac",
+                ".webm": "audio/webm",
+                ".mp4": "audio/mp4",
+            }
+            mime_type = extension_map.get(ext, "audio/wav")
+
+    # Normalize mime types for Gemini compatibility
+    if mime_type:
+        mime_type = mime_type.lower()
+        if "m4a" in mime_type or "x-m4a" in mime_type:
+            mime_type = "audio/m4a"
+        elif "mp4" in mime_type:
+            mime_type = "audio/mp4"
+        elif "mpeg" in mime_type or "mp3" in mime_type:
+            mime_type = "audio/mp3"
+        elif "wav" in mime_type or "x-wav" in mime_type:
+            mime_type = "audio/wav"
+        elif "webm" in mime_type:
+            mime_type = "audio/webm"
+        elif "ogg" in mime_type:
+            mime_type = "audio/ogg"
+
     # Gemini evaluation
-    evaluation = evaluate_pronunciation(file_path)
+    evaluation = evaluate_pronunciation(file_path, mime_type=mime_type)
 
     # Check for evaluation errors
     if "error" in evaluation and "language" not in evaluation:
