@@ -26,9 +26,7 @@ const deleteDataBtn = document.getElementById("deleteDataBtn");
 let lastReportFilename = "";
 let currentAnalysisController = null;
 
-const BACKEND_URL = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:"
-  ? "http://127.0.0.1:8000"
-  : "https://pronunciation-ai.onrender.com";
+const BACKEND_URL = "https://pronunciation-backend-qu87.onrender.com";
 
 analyzeBtn.disabled = true;
 
