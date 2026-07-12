@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Pronunciation Evaluator</title>
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css">
+
+    <!-- CSS -->
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- ================= HERO ================= -->
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <div class="hero-icon">
+
+                <i class="fa-solid fa-microphone-lines"></i>
+
+            </div>
+
+            <span class="badge">
+
+                AI Powered Pronunciation Analysis
+
+            </span>
+
+            <h1>
+
+                AI Pronunciation Evaluator
+
+            </h1>
+
+            <p>
+
+                Upload your English speech and receive an AI-generated pronunciation score,
+                detailed feedback, highlighted pronunciation mistakes, and personalized
+                suggestions to improve your speaking confidence.
+
+            </p>
+
+            <div class="hero-waveform" aria-hidden="true">
+                <span style="--i:0"></span><span style="--i:1"></span><span style="--i:2"></span>
+                <span style="--i:3"></span><span style="--i:4"></span><span style="--i:5"></span>
+                <span style="--i:6"></span><span style="--i:7"></span><span style="--i:8"></span>
+                <span style="--i:9"></span><span style="--i:10"></span><span style="--i:11"></span>
+                <span style="--i:12"></span><span style="--i:13"></span><span style="--i:14"></span>
+                <span style="--i:15"></span><span style="--i:16"></span><span style="--i:17"></span>
+                <span style="--i:18"></span><span style="--i:19"></span><span style="--i:20"></span>
+                <span style="--i:21"></span><span style="--i:22"></span><span style="--i:23"></span>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- ================= Upload Section ================= -->
+
+    <section class="upload-section">
+
+        <div class="upload-card" id="dropArea">
+
+            <i class="fa-solid fa-cloud-arrow-up upload-icon"></i>
+
+            <h2>
+
+                Upload Your Audio
+
+            </h2>
+
+            <p class="upload-text">
+
+                Drag & Drop your audio file here
+
+            </p>
+
+            <span class="or-text">
+
+                OR
+
+            </span>
+
+            <input type="file" id="audioFile" accept=".mp3,.wav,.m4a" hidden>
+
+            <label for="audioFile" class="upload-btn">
+
+                <i class="fa-solid fa-folder-open"></i>
+
+                Choose Audio File
+
+            </label>
+
+            <div class="file-details">
+
+                <h3>
+
+                    <i class="fa-solid fa-file-audio"></i>
+
+                    Selected File
+
+                </h3>
+
+                <p id="fileName">
+
+                    No file selected
+
+                </p>
+
+                <p id="fileSize"></p>
+
+                <p id="fileDuration"></p>
+
+            </div>
+
+            <div class="upload-note">
+                <div>✅ Audio Duration: 30–45 Seconds</div>
+            </div>
+
+            <!-- DPDP Consent Checkbox -->
+            <div class="consent-container">
+                <input type="checkbox" id="dpdpConsent" class="consent-checkbox">
+                <label for="dpdpConsent" class="consent-label">
+                    I give voluntary consent to process my voice recording for pronunciation analysis under the <a
+                        href="#" id="privacyPolicyLink" class="privacy-link">DPDP Act 2023 Privacy Notice</a>.
+                </label>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ================= Audio Preview ================= -->
+
+    <section class="audio-preview">
+
+        <div class="preview-card">
+
+            <h2>
+
+                <i class="fa-solid fa-headphones"></i>
+
+                Audio Preview
+
+            </h2>
+
+            <audio id="audioPlayer" controls>
+
+            </audio>
+
+        </div>
+
+    </section>
+
+    <!-- ================= Analyze ================= -->
+
+    <section class="analyze-section">
+
+        <button id="analyzeBtn">
+
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+
+            Analyze Pronunciation
+
+        </button>
+
+    </section>
+    <!-- ================= LOADING ================= -->
+
+    <section id="loading" class="loading">
+
+        <div class="loading-inner">
+
+            <div class="loader"></div>
+
+            <h2>Analyzing Pronunciation...</h2>
+
+            <p>
+
+                Please wait while our AI analyzes your speech.
+
+            </p>
+
+            <div class="loading-steps">
+                <span>Uploading</span>
+                <span>Transcribing</span>
+                <span>Evaluating</span>
+            </div>
+
+            <button id="stopAnalyzeBtn" class="stop-analyze-btn">
+                <i class="fa-solid fa-stop"></i>
+                Stop
+            </button>
+
+        </div>
+
+    </section>
+
+    <!-- ================= RESULTS ================= -->
+
+    <!-- ================= RESULTS ================= -->
+
+    <section id="results" class="results">
+
+        <!-- Overall Score -->
+
+        <div class="card score-card">
+
+            <h2>
+                <i class="fa-solid fa-chart-line"></i>
+                Overall Score
+            </h2>
+
+            <div class="score-circle">
+                <span id="score">0</span>
+            </div>
+
+            <p class="score-text">
+                AI Evaluation
+            </p>
+
+        </div>
+
+        <!-- Transcript -->
+
+        <div class="card">
+            <h2>
+                <i class="fa-solid fa-file-lines"></i>
+                Transcript
+            </h2>
+            <p class="transcript-instruction"><i class="fa-solid fa-circle-info"></i> Click highlighted words to review
+                mistakes.</p>
+            <div id="transcript" class="transcript-content">
+                Your transcript will appear here after AI analysis.
+            </div>
+        </div>
+
+        <!-- Corrected Transcript -->
+
+        <div class="card">
+
+            <h2>
+                <i class="fa-solid fa-file-pen"></i>
+                Corrected Transcript
+            </h2>
+
+            <p id="correctedTranscript">
+                Corrected transcript will appear here.
+            </p>
+
+        </div>
+
+        <!-- Pronunciation Mistakes -->
+
+        <div class="card">
+
+            <h2>
+                <i class="fa-solid fa-circle-exclamation"></i>
+                Pronunciation Mistakes
+            </h2>
+
+            <ul id="mistakes">
+                <li>No pronunciation mistakes detected.</li>
+            </ul>
+
+        </div>
+
+        <!-- Strengths -->
+
+        <div class="card">
+
+            <h2>
+                <i class="fa-solid fa-thumbs-up"></i>
+                Strengths
+            </h2>
+
+            <ul id="strengths">
+                <li>Strengths will appear here.</li>
+            </ul>
+
+        </div>
+
+        <!-- Suggestions -->
+
+        <div class="card">
+
+            <h2>
+                <i class="fa-solid fa-lightbulb"></i>
+                Suggestions
+            </h2>
+
+            <ul id="suggestions">
+                <li>Suggestions will appear here.</li>
+            </ul>
+
+        </div>
+
+        <!-- Detailed Scores -->
+
+        <div class="card">
+
+            <h2>
+                <i class="fa-solid fa-chart-column"></i>
+                Detailed Scores
+            </h2>
+
+            <p><strong>Pronunciation:</strong> <span id="pronunciationScore">0</span></p>
+
+            <p><strong>Fluency:</strong> <span id="fluencyScore">0</span></p>
+
+            <p><strong>Clarity:</strong> <span id="clarityScore">0</span></p>
+
+            <p><strong>Pace:</strong> <span id="pace">-</span></p>
+
+        </div>
+
+        <!-- Overall Feedback -->
+
+        <div class="card">
+
+            <h2>
+                <i class="fa-solid fa-comment-dots"></i>
+                Overall Feedback
+            </h2>
+
+            <p id="overallFeedback">
+                Feedback will appear here.
+            </p>
+
+        </div>
+
+        <!-- PDF Report & Data Control -->
+        <div class="card">
+            <h2>
+                <i class="fa-solid fa-file-pdf"></i>
+                PDF Report & Data Control
+            </h2>
+            <div class="report-actions">
+                <a id="downloadPdf" href="#" target="_blank">
+                    <button class="upload-btn">
+                        <i class="fa-solid fa-download"></i>
+                        Download Report
+                    </button>
+                </a>
+                <button id="deleteDataBtn" class="delete-btn">
+                    <i class="fa-solid fa-trash-can"></i>
+                    Delete All My Data
+                </button>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="footer-content">
+
+            <h3>
+
+                AI Pronunciation Evaluator
+
+            </h3>
+
+            <p>
+
+                Built using HTML, CSS, JavaScript, FastAPI & AI
+
+            </p>
+
+            <p>
+
+                © 2026 All Rights Reserved
+
+            </p>
+
+        </div>
+
+    </footer>
+
+    <!-- Privacy Policy Modal (DPDP Compliance) -->
+    <div id="privacyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" id="closePrivacyModal">&times;</span>
+            <h2><i class="fa-solid fa-shield-halved"></i> Privacy & DPDP Compliance Notice</h2>
+
+            <div class="modal-body">
+                <p>In accordance with India's <strong>Digital Personal Data Protection (DPDP) Act 2023</strong>, this
+                    notice explains how we handle your voice recordings and generated reports:</p>
+
+                <div class="policy-item">
+                    <h4><i class="fa-solid fa-key"></i> Consent-Based Processing</h4>
+                    <p>We process your voice recordings only after obtaining your explicit consent. Checking the consent
+                        box and uploading files acts as your clear, affirmative consent.</p>
+                </div>
+
+                <div class="policy-item">
+                    <h4><i class="fa-solid fa-bullseye"></i> Purpose Limitation</h4>
+                    <p>Your audio is processed strictly to transcribe speech, evaluate pronunciation, and provide
+                        diagnostic feedback to help you improve your English pronunciation.</p>
+                </div>
+
+                <div class="policy-item">
+                    <h4><i class="fa-solid fa-trash-can"></i> Storage Limitation & Right to Erasure</h4>
+                    <p>We do not store your voice data permanently:</p>
+                    <ul>
+                        <li><strong>Audio Recording:</strong> The audio file is sent to the backend, processed, and
+                            <strong>permanently deleted immediately</strong> after analysis (usually in less than a
+                            minute).</li>
+                        <li><strong>Evaluation PDF:</strong> The generated PDF report is stored temporarily so you can
+                            download it. Reports are <strong>automatically deleted from our servers after 24
+                                hours</strong>.</li>
+                        <li><strong>Right to Erasure:</strong> You can click the <strong>"Delete All My Data"</strong>
+                            button on the results page to instantly delete your report from the server on demand.</li>
+                    </ul>
+                </div>
+
+                <div class="policy-item">
+                    <h4><i class="fa-solid fa-server"></i> Data Security</h4>
+                    <p>Audio is processed securely using end-to-end encryption. Your personal voice files are never
+                        shared, sold, or used for ads/profiling.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="upload-btn" id="acceptPrivacyBtn">I Understand & Accept</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

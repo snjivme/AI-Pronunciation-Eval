@@ -1,0 +1,18 @@
+# Python virtual environment
+backend/env/
+
+# Environment variables
+backend/.env
+
+# Python cache
+backend/__pycache__/
+*.pyc
+
+# Uploaded files
+backend/uploads/
+
+# Generated reports
+backend/reports/
+
+# VS Code
+.vscode/
